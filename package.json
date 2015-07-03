@@ -1,0 +1,14 @@
+{
+  "name": "files",
+  "version": "0.0.1",
+  "description": "File package for CLEVER.",
+  "author": {
+    "name": "Jacopo Daeli <jacopo.daeli@gmail.com>"
+  },
+  "clever": "0.0.x",
+  "visible": true,
+  "dependencies": {
+  },
+  "devDependencies": {},
+  "license": "MIT"
+}

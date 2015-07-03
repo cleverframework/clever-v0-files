@@ -1,0 +1,22 @@
+{
+  "name": "files",
+  "version": "0.0.1",
+  "authors": [
+    "JacopoDaeli <jacopo.daeli@gmail.com>"
+  ],
+  "description": "Files package for CLEVER.",
+  "main": "main.js",
+  "moduleType": [
+    "es6",
+    "node"
+  ],
+  "keywords": [
+    "clever",
+    "clever-core",
+    "clever-cli",
+    "files"
+  ],
+  "license": "MIT",
+  "dependencies": {
+  }
+}
