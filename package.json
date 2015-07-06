@@ -8,6 +8,10 @@
   "clever": "0.0.x",
   "visible": true,
   "dependencies": {
+    "blueimp-file-upload": "^9.10.0",
+    "busboy": "^0.2.9",
+    "shortid": "^2.2.2",
+    "stream-buffers": "^2.2.0"
   },
   "devDependencies": {},
   "license": "MIT"

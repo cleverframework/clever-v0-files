@@ -18,5 +18,6 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "blueimp-file-upload-node": "9.10.0"
   }
 }

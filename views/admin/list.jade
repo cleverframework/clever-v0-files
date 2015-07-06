@@ -3,7 +3,7 @@ extends ../../../system/views/admin/layout/admin
 block content
     
   h1.page-header
-    | Users: 
+    | Files: 
     span(style="color: #666") List
     div.row.placeholders
   
@@ -11,34 +11,30 @@ block content
     thead
       tr
         th
-          | Firstname
+          | Thumb
         th
-          | Lastname
+          | Title
         th
-          | Email
+          | Description
         th
-          | Roles
+          | Modified
         th
-          | Provider
-        th
-          | 
     tbody
-      each user in users
+      each file in files
         tr
           td
-            a(href="/admin/users/#{user._id}")
-              | #{user.firstName}
+            a(href="/admin/files/#{file._id}")
+              if ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].indexOf(file.mime)
+                img(src="#{file.url}", width="20", height="20")
+              else 
+                i.fa.fa-file-o.fa-2x
           td
-            | #{user.lastName}
+            a(href="/admin/files/#{file._id}")
+              | #{file.title}
           td
-            | #{user.email}
+            | #{file.description}
           td
-            each role, index in user.roles
-              if index > 0
-                | , 
-              | #{role}
-          td
-            | #{user.provider}
+            | #{file.modified || 'Never'}
           td
             .btn-group
                 button.btn.btn-info.dropdown-toggle(type="button", data-toggle="dropdown", aria-expanded="false")
@@ -47,51 +43,45 @@ block content
                 |   
                 ul.dropdown-menu(role="menu")
                   li
-                    a(href="/admin/users/#{user._id}/edit") Edit
-                  | 
-                  li
-                    a(href="/admin/users/#{user._id}/edit/change-password") Change Password
+                    a(href="/admin/files/#{file._id}/edit") Edit
                   |     
                   li
-                    a.deleteUser(href="#", data-id="#{user._id}") Delete
+                    a.deleteSetting(href="#", data-id="#{file._id}") Delete
 
     tfoot
       tr
         th
-          | Firstname
+          | Thumb
         th
-          | Lastname
+          | Title
         th
-          | Email
+          | Description
         th
-          | Roles
+          | Modified 
         th
-          | Provider
-        th 
-          | 
           
-  a(href="/admin/users/create").btn.btn-primary Create
+  a(href="/admin/files/create").btn.btn-primary Create
   
-  - var nPages = Math.ceil(nUsers / 10);
+  - var nPages = Math.ceil(nSettings / 10);
   - var i = 0;
   
   if nPages > 0
     nav.pull-right
       ul.pagination
         li(class=(activePage == 0) ? 'disabled' : '')
-          a(href="/admin/users/#{activePage-1}", aria-label="Previous")
+          a(href="/admin/files/#{activePage-1}", aria-label="Previous")
             span(aria-hidden="true") &laquo;
             
         while i < nPages   
           li(class=(i == activePage) ? 'active' : '')
-            a(href="/admin/users?page=#{i}")
+            a(href="/admin/files?page=#{i}")
               | #{++i} 
                 
         li(class=(activePage < nPages-1) ? '' : 'disabled')
-          a(href="/admin/users/#{activePage+1}", aria-label="Next")
+          a(href="/admin/files/#{activePage+1}", aria-label="Next")
             span(aria-hidden="true") &raquo;
               
 block appendjs
   script.
     window.csrf = '#{csrfToken}';
-  script(src="/public/users/admin/index.js")
+  script(src="/public/system/admin/index.js")

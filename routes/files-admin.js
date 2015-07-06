@@ -10,19 +10,18 @@ let CleverCore = require('clever-core');
 let config = CleverCore.loadConfig();
 
 // Load controller
-let imageGalleriesAdminCtrl = require('../controllers/image-galleries-admin');
+let filesAdminCtrl = require('../controllers/files-admin');
 
 // Exports
-module.exports = function(ImageGalleriesPackage, app, auth, database, storage) {
+module.exports = function(FilesPackage, app, auth, database, storage) {
 
-  // Show registration form
-  router.get('/', auth.requiresAdmin, imageGalleriesAdminCtrl.showUsers.bind(null, ImageGalleriesPackage));
+  router.get('/', auth.requiresAdmin, filesAdminCtrl.showFiles.bind(null, FilesPackage));
 
-  router.get('/create', auth.requiresAdmin, imageGalleriesAdminCtrl.createUser.bind(null, ImageGalleriesPackage));
+  router.get('/create', auth.requiresAdmin, filesAdminCtrl.createFile.bind(null, FilesPackage));
 
-  router.get('/:id', auth.requiresAdmin, imageGalleriesAdminCtrl.showUser.bind(null, ImageGalleriesPackage));
+  router.get('/:id', auth.requiresAdmin, filesAdminCtrl.showFileById.bind(null, FilesPackage));
 
-  router.get('/:id/edit/:opt?', auth.requiresAdmin, imageGalleriesAdminCtrl.editUser.bind(null, ImageGalleriesPackage));
+  router.get('/:id/edit', auth.requiresAdmin, filesAdminCtrl.editFileById.bind(null, FilesPackage));
 
   return new CleverCore.CleverRoute(router, 'admin', false);
 

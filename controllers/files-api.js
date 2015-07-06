@@ -1,93 +1,53 @@
 'use strict';
 
-// Module dependencies.
+// Module dependencies
 const mongoose = require('mongoose');
-const User = mongoose.model('User');
+const File = mongoose.model('File');
 const async = require('async');
 const config = require('clever-core').loadConfig();
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const UploadHandler = require('../upload-handler');
 const util = require('../util');
 
-// Send logged user
-exports.me = function(req, res) {
-  util.sendObjectAsHttpResponse(res, 200, req.user || null);
-};
-
-// Find all user
-exports.getUsers = function(req, res, next) {
-  User.getUsers(req.query.start, req.query.limit)
+// Find all files
+exports.getFiles = function(req, res, next) {
+  File.getFiles(req.query.start, req.query.limit)
     .then(util.sendObjectAsHttpResponse.bind(null, res, 200))
     .catch(util.passNext.bind(null, next));
 };
 
-// Find user by id
-exports.getUserById = function(req, res, next) {
-  User.getUserById(req.params.id)
+// Find file by id
+exports.getFileById = function(req, res, next) {
+  File.getFileById(req.params.id)
     .then(util.sendObjectAsHttpResponse.bind(null, res, 200))
     .catch(util.passNext.bind(null, next));
 };
 
-// Create user
-exports.createUser = function(req, res, next) {
-
-  // because we set our user.provider to local our models/user.js validation will always be true
-  req.assert('firstName', 'You must enter your first name').notEmpty();
-  req.assert('lastName', 'You must enter your last name').notEmpty();
-  req.assert('firstName', 'Firstname cannot be more than 32 characters').len(1, 32);
-  req.assert('lastName', 'Lastname cannot be more than 32 characters').len(1, 32);
-  req.assert('email', 'You must enter a valid email address').isEmail();
-  req.assert('password', 'Password must be between 8-20 characters long').len(8, 20);
-  // req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
-
-  const errors = req.validationErrors();
-  if (errors) {
-    return res.status(400).json(errors);
-  }
-
-  User.createUser(req.body)
-    .then(util.sendObjectAsHttpResponse.bind(null, res, 201))
-    .catch(util.sendObjectAsHttpResponse.bind(null, res, 400));
+// Create file
+exports.createFile = function(req, res, next) {
+  const handler = new UploadHandler();
+  handler.post(req, res, next);
 };
 
-// Edit user logged user id
-exports.editUserById = function(req, res, next) {
+// Edit file by id
+exports.editFileById = function(req, res, next) {
 
   // Optionals
-  req.assert('firstName', 'You must enter your first name').optional().notEmpty();
-  req.assert('lastName', 'You must enter your last name').optional().notEmpty();
-  req.assert('firstName', 'Firstname cannot be more than 32 characters').optional().len(1, 32);
-  req.assert('lastName', 'Lastname cannot be more than 32 characters').optional().len(1, 32);
-  req.assert('email', 'You must enter a valid email address').optional().isEmail();
-  req.assert('password', 'Password must be between 8-20 characters long').optional().len(8, 20);
+  req.assert('key', 'Key cannot be empty').notEmpty();
+  req.assert('value', 'Value cannot be empty').notEmpty();
 
   const errors = req.validationErrors();
   if (errors) {
     return res.status(400).json(errors);
   }
 
-  User.editUserById(req.params.id, req.body)
+  File.editFileById(req.params.id, req.body)
     .then(util.sendObjectAsHttpResponse.bind(null, res, 202))
-    .catch(util.sendObjectAsHttpResponse.bind(null, res, 400));
+    .catch(util.sendErrorAsHttpResponse.bind(null, res, 400));
 };
 
-// Edit logged user
-exports.editLoggedUser = function(req, res, next) {
-  if(!req.isAuthenticated()) {
-    return res.status(401).json([{
-      message: 'User Unauthorized',
-      status: 401
-    }]);
-  }
-
-  req.params.id = req.user._id;
-  req.body.admin = req.user.isAdmin();
-  exports.editUserById(req, res, next);
-};
-
-// Delete user by id
-exports.deleteUserById = function(req, res, next) {
-  User.deleteUserById(req.params.id)
+// Delete file by id
+exports.deleteFileById = function(req, res, next) {
+  File.deleteFileById(req.params.id)
     .then(util.sendObjectAsHttpResponse.bind(null, res, 202))
     .catch(util.passNext.bind(null, next));
 };

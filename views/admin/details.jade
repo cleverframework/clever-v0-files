@@ -2,33 +2,20 @@ extends ../../../system/views/admin/layout/admin
 
 block content
   h1.page-header
-    | Users: 
-    span(style="color: #666") #{userToShow.firstName} #{userToShow.lastName} [Details]
+    | Settings: 
+    span(style="color: #666") #{settingToShow.key} [Details]
     div.row.placeholders
-  form#editUser.col-sm-8(autocomplete="off")
+  form#editSetting.col-sm-8(autocomplete="off")
     .form-group
-        label(for="inputFirstName") First Name
+        label(for="inputKey") Key
         |     
-        input#inputFirstName.form-control(type="text", name="firstName", value="#{userToShow.firstName}", placeholder="Firstname", disabled)
-      |  
+        input#inputKey.form-control(type="text", name="key", value="#{settingToShow.key}", placeholder="Key", disabled)
     .form-group
-        label(for="inputLastname") Last Name
+        label(for="inputValue") Value
         |     
-        input#inputLastname.form-control(type="text", name="lastName", value="#{userToShow.lastName}", placeholder="Lastname", disabled)
-      |  
-    .form-group
-        label(for="inputEmail") Email address
-        |     
-        input#inputEmail.form-control(type="email", name="email", value="#{userToShow.email}", placeholder="Email address", disabled)
+        textarea#inputValue.form-control(name="value", placeholder="String or JSON object syntax", disabled) #{settingToShow.value}
       |   
-    .checkbox
-      label
-        if userToShow.roles.indexOf('admin') > -1
-          input(type="checkbox", name="admin", value="1", checked, disabled)
-        else 
-          input(type="checkbox", name="admin", value="1", disabled)
-        |  Admin
-    a.btn.btn-default(href="/admin/users", style="margin-right: 5px;") &laquo;
+    a.btn.btn-default(href="/admin/settings", style="margin-right: 5px;") &laquo;
     .btn-group
         button.btn.btn-info.dropdown-toggle(type="button", data-toggle="dropdown", aria-expanded="false")
           | Modify 
@@ -36,16 +23,13 @@ block content
         |   
         ul.dropdown-menu(role="menu")
           li
-            a(href="/admin/users/#{userToShow._id}/edit") Edit
+            a(href="/admin/settings/#{settingToShow._id}/edit") Edit
           | 
           li
-            a(href="/admin/users/#{userToShow._id}/edit/change-password") Change Password
-          |     
-          li
-            a.deleteUser(href="#", data-id="#{userToShow._id}") Delete
+            a.deleteSetting(href="#", data-id="#{settingToShow._id}") Delete
 
 block appendjs
   script.
     window.csrf = '#{csrfToken}';
-    window.urlreload = '/admin/users';
-  script(src="/public/users/admin/index.js")
+    window.urlreload = '/admin/settings';
+  script(src="/public/system/admin/index.js")

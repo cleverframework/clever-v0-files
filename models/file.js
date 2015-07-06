@@ -1,6 +1,6 @@
 'use strict';
 
-// Module dependencies.
+// Module dependencies
 const cleverCore = require('clever-core');
 const config = cleverCore.loadConfig();
 const storage = cleverCore.loadStorage();
@@ -44,19 +44,13 @@ function escapeProperty(value) {
 const FileSchema = new Schema({
   title: {
     type: String,
-    required: true,
-    default: 'Untitled'
+    default: 'Untitled',
     get: escapeProperty
   },
   description: {
     type: String,
-    required: true,
     default: '',
     get: escapeProperty
-  },
-  bucket: {
-    type: String,
-    required: true
   },
   key: {
     type: String,
@@ -65,15 +59,35 @@ const FileSchema = new Schema({
   private: {
     type: Boolean,
     required: true,
-    default: false
+    default: true
+  },
+  mimetype: {
+    type: String,
+    required: true
+  },
+  encoding: {
+    type: String
+  },
+  size: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  modified: {
+    type: Date,
+    default: null
   }
 });
 
 // Virtuals
-UserSchema.virtual('url').set(function(url) {
+FileSchema.virtual('url').set(function(url) {
   throw new Error('File::url cannot be set.');
 }).get(function() {
-  return `${storage.webServerUrl}/${this.bucket}/${this.key}`;
+  return `${storage.webServerUrl}/${storage.volumeName}/${this.key}`;
 });
 
 // Static Methods
@@ -183,16 +197,20 @@ FileSchema.statics = {
     return defer.promise;
   },
 
-  createFile: function(fileParams) {
+  createFile: function(fileParams, fileData) {
     const File = mongoose.model('File');
-    const file = new File(fileParams);
-
     const defer = Q.defer();
-    file.save(function(err) {
-      const errors = hasErrors(err);
-      if(errors) return defer.reject(errors);
-      defer.resolve(file);
-    });
+
+    storage.createFile(fileParams.key, fileData)
+      .then(function() {
+        const file = new File(fileParams);
+        file.save(function(err) {
+          const errors = hasErrors(err);
+          if(errors) return defer.reject(errors);
+          defer.resolve(file);
+        });
+      })
+      .catch(defer.reject)
 
     return defer.promise;
   }
@@ -208,7 +226,7 @@ FileSchema.methods = {
    * @api public
    */
   getData: function() {
-    const FileImage = mongoose.model('FileImage');
+    // const FileImage = mongoose.model('FileImage');
     const defer = Q.defer();
 
     // TODO: implementation
