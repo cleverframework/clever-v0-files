@@ -17,6 +17,8 @@ block content
         th
           | Description
         th
+          | Type
+        th
           | Modified
         th
     tbody
@@ -24,15 +26,17 @@ block content
         tr
           td
             a(href="/admin/files/#{file._id}")
-              if ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].indexOf(file.mime)
-                img(src="#{file.url}", width="20", height="20")
+              if ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].indexOf(file.mimetype) > -1
+                img(src="#{file.url}", width="35", height="35")
               else 
-                i.fa.fa-file-o.fa-2x
+                span.glyphicon.glyphicon-file(style="font-size: 2.80em; color: #888; top: 3px")
           td
             a(href="/admin/files/#{file._id}")
               | #{file.title}
           td
             | #{file.description}
+          td
+            | #{file.mimetype}  
           td
             | #{file.modified || 'Never'}
           td
@@ -57,10 +61,12 @@ block content
         th
           | Description
         th
+          | Type
+        th
           | Modified 
         th
           
-  a(href="/admin/files/create").btn.btn-primary Create
+  a(href="#", data-toggle="modal", data-target="#uploadFilesModal").btn.btn-primary Upload
   
   - var nPages = Math.ceil(nSettings / 10);
   - var i = 0;
@@ -80,8 +86,61 @@ block content
         li(class=(activePage < nPages-1) ? '' : 'disabled')
           a(href="/admin/files/#{activePage+1}", aria-label="Next")
             span(aria-hidden="true") &raquo;
+            
+            
+  #uploadFilesModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="uploadFilesModalLabel")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+          h4.modal-title Upload Files
+        .modal-body
+          span.btn.btn-success.fileinput-button
+            i.glyphicon.glyphicon-plus
+            span Select files...
+            input#fileupload(type='file', name='files[]', multiple='')
+          br
+          br
+          #progress.progress
+            .progress-bar.progress-bar-success
+          #files.files
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal') Close
+          button.btn.btn-primary(type='button') Upload
+
               
 block appendjs
   script.
     window.csrf = '#{csrfToken}';
-  script(src="/public/system/admin/index.js")
+  script(src="/public/files/vendor/jquery-ui/jquery-ui.min.js")
+  script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.iframe-transport.js")
+  script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.fileupload.js")
+  script(src="/public/files/admin/index.js")
+  script.
+    $(function () {
+        'use strict';
+        // Change this to the location of your server-side upload handler:
+        var url = '/api/files'
+        $('#fileupload').fileupload({
+          url: url,
+          dataType: 'json',
+          beforeSend: function(xhr){
+            xhr.setRequestHeader("csrf-token", window.csrf);
+          },
+          done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+              $('<p/>').text(file.name).appendTo('#files');
+            });
+          },
+          progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+              'width',
+              progress + '%'
+            );
+          }
+        })
+        .prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+    });    
