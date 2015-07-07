@@ -9,7 +9,7 @@ export default (app) => {
         location.href = `${options.urlCallback}/${data._id}`;
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        // Show the errors to the user
+        // Show the errors to the file
         options.$errorMessage.html(`${jqXHR.responseJSON[0].msg}.`);
         options.$error.removeClass('hidden');
 
@@ -23,64 +23,39 @@ export default (app) => {
     console.log(`${app.config.name} started`);
   });
 
-  app.on('createUser', (form) => {
+  app.on('editFile', (form) => {
 
-    const $createUserError = $('#createUserError');
-    const $createUserBtn = $('#createUserBtn');
+    const $editFileError = $('#editFileError');
+    const $editFileBtn = $('#editFileBtn');
     const options = {
       formURL: $(form).attr('action'),
       method: $(form).attr('method'),
       postData: $(form).serialize(),
-      urlCallback: '/admin/users',
-      $error: $createUserError,
-      $errorMessage: $('#createUserError .message'),
-      $btn: $createUserBtn
+      urlCallback: '/admin/files',
+      $error: $editFileError,
+      $errorMessage: $('#editFileError .message'),
+      $btn: $editFileBtn
     }
 
     // Clear the error message div
-    $createUserError.addClass('hidden');
+    $editFileError.addClass('hidden');
 
     // Send Ajax
     sendDataAjax(options);
 
     // Disable the submit form button
-    $createUserBtn.addClass('disabled');
+    $editFileBtn.addClass('disabled');
 
   });
 
-  app.on('editUser', (form) => {
+  app.on('deleteFile', (btn) => {
 
-    const $editUserError = $('#editUserError');
-    const $editUserBtn = $('#editUserBtn');
-    const options = {
-      formURL: $(form).attr('action'),
-      method: $(form).attr('method'),
-      postData: $(form).serialize(),
-      urlCallback: '/admin/users',
-      $error: $editUserError,
-      $errorMessage: $('#editUserError .message'),
-      $btn: $editUserBtn
-    }
-
-    // Clear the error message div
-    $editUserError.addClass('hidden');
-
-    // Send Ajax
-    sendDataAjax(options);
-
-    // Disable the submit form button
-    $editUserBtn.addClass('disabled');
-
-  });
-
-  app.on('deleteUser', (btn) => {
-
-    if(!confirm('Are you sure to want delete this user?')) return false;
+    if(!confirm('Are you sure to want delete this file?')) return false;
 
     const $btn = $(btn);
 
     const request = $.ajax({
-      url: `/api/users/${$btn.data('id')}`,
+      url: `/api/files/${$btn.data('id')}`,
       beforeSend: function (request) {
         request.setRequestHeader('csrf-token', window.csrf);
       },

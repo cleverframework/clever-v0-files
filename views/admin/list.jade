@@ -1,5 +1,9 @@
 extends ../../../system/views/admin/layout/admin
 
+block appendcss
+  link(rel='stylesheet', href='/public/system/admin/index.css')
+  link(rel='stylesheet', href='/public/files/vendor/blueimp-file-upload-node/css/jquery.fileupload.css')
+
 block content
     
   h1.page-header
@@ -15,7 +19,7 @@ block content
         th
           | Title
         th
-          | Description
+          | Size (bytes)
         th
           | Type
         th
@@ -28,13 +32,21 @@ block content
             a(href="/admin/files/#{file._id}")
               if ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'].indexOf(file.mimetype) > -1
                 img(src="#{file.url}", width="35", height="35")
+              else if ['application/pdf'].indexOf(file.mimetype) > -1
+                i.fa.fa-file-pdf-o.fa-3x
+              else if ['text/csv'].indexOf(file.mimetype) > -1
+                i.fa.fa-file-excel-o.fa-3x
+              else if ['application/x-gzip', 'application/zip', 'application/x-xz'].indexOf(file.mimetype) > -1
+                i.fa.fa-file-archive-o.fa-3x
+              else if ['text/html', 'text/javascript', 'text/css', 'application/octet-stream'].indexOf(file.mimetype) > -1
+                i.fa.fa-file-code-o.fa-3x
               else 
-                span.glyphicon.glyphicon-file(style="font-size: 2.80em; color: #888; top: 3px")
+                i.fa.fa-file-o.fa-3x
           td
             a(href="/admin/files/#{file._id}")
               | #{file.title}
           td
-            | #{file.description}
+            | #{file.size}
           td
             | #{file.mimetype}  
           td
@@ -50,7 +62,7 @@ block content
                     a(href="/admin/files/#{file._id}/edit") Edit
                   |     
                   li
-                    a.deleteSetting(href="#", data-id="#{file._id}") Delete
+                    a.deleteFile(href="#", data-id="#{file._id}") Delete
 
     tfoot
       tr
@@ -59,7 +71,7 @@ block content
         th
           | Title
         th
-          | Description
+          | Size (bytes)
         th
           | Type
         th
@@ -68,7 +80,7 @@ block content
           
   a(href="#", data-toggle="modal", data-target="#uploadFilesModal").btn.btn-primary Upload
   
-  - var nPages = Math.ceil(nSettings / 10);
+  - var nPages = Math.ceil(nFiles / 10);
   - var i = 0;
   
   if nPages > 0
@@ -107,7 +119,6 @@ block content
           #files.files
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal') Close
-          button.btn.btn-primary(type='button') Upload
 
               
 block appendjs
@@ -117,30 +128,3 @@ block appendjs
   script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.iframe-transport.js")
   script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.fileupload.js")
   script(src="/public/files/admin/index.js")
-  script.
-    $(function () {
-        'use strict';
-        // Change this to the location of your server-side upload handler:
-        var url = '/api/files'
-        $('#fileupload').fileupload({
-          url: url,
-          dataType: 'json',
-          beforeSend: function(xhr){
-            xhr.setRequestHeader("csrf-token", window.csrf);
-          },
-          done: function (e, data) {
-            $.each(data.result.files, function (index, file) {
-              $('<p/>').text(file.name).appendTo('#files');
-            });
-          },
-          progressall: function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress .progress-bar').css(
-              'width',
-              progress + '%'
-            );
-          }
-        })
-        .prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
-    });    
