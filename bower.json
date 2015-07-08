@@ -19,6 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "blueimp-file-upload-node": "9.10.0",
-    "jquery-ui": "~1.11.4"
+    "jquery-ui": "~1.11.4",
+    "cropper": "~0.10.1"
   }
 }

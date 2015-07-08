@@ -10,6 +10,7 @@
   "dependencies": {
     "blueimp-file-upload": "^9.10.0",
     "busboy": "^0.2.9",
+    "file-uploader-sdk": "git+ssh://git@github.com/JacopoDaeli/file-uploader-sdk.git",
     "shortid": "^2.2.2",
     "stream-buffers": "^2.2.0"
   },

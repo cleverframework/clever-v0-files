@@ -3,6 +3,7 @@ extends ../../../system/views/admin/layout/admin
 block appendcss
   link(rel='stylesheet', href='/public/system/admin/index.css')
   link(rel='stylesheet', href='/public/files/vendor/blueimp-file-upload-node/css/jquery.fileupload.css')
+  link(rel='stylesheet', href='/public/files/vendor/cropper/dist/cropper.min.css')
 
 block content
     
@@ -34,6 +35,8 @@ block content
                 img(src="#{file.url}", width="35", height="35")
               else if ['application/pdf'].indexOf(file.mimetype) > -1
                 i.fa.fa-file-pdf-o.fa-3x
+              else if ['image/tiff'].indexOf(file.mimetype) > -1
+                i.fa.fa-file-image-o.fa-3x
               else if ['text/csv'].indexOf(file.mimetype) > -1
                 i.fa.fa-file-excel-o.fa-3x
               else if ['application/x-gzip', 'application/zip', 'application/x-xz'].indexOf(file.mimetype) > -1
@@ -100,25 +103,27 @@ block content
             span(aria-hidden="true") &raquo;
             
             
-  #uploadFilesModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="uploadFilesModalLabel")
+  #uploadFilesModal.modal.fade(data-backdrop="static", data-keyboard="false", tabindex="-1", role="dialog", aria-labelledby="uploadFilesModalLabel")
     .modal-dialog
       .modal-content
         .modal-header
           button.close(type='button', data-dismiss='modal', aria-label='Close')
             span(aria-hidden='true') &times;
           h4.modal-title Upload Files
-        .modal-body
-          span.btn.btn-success.fileinput-button
-            i.glyphicon.glyphicon-plus
-            span Select files...
-            input#fileupload(type='file', name='files[]', multiple='')
-          br
-          br
-          #progress.progress
-            .progress-bar.progress-bar-success
-          #files.files
-        .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal') Close
+        #fileUploaderContainer.modal-body
+          //
+            span.btn.btn-success.fileinput-button
+              i.glyphicon.glyphicon-plus
+              span Select files...
+              input#fileupload(type='file', name='files[]', multiple='')
+            br
+            br
+            #progress.progress
+              .progress-bar.progress-bar-success
+            #files.files
+        #fileUploaderMediaController.modal-footer
+          //
+            button.btn.btn-default(type='button', data-dismiss='modal') Close
 
               
 block appendjs
@@ -127,4 +132,5 @@ block appendjs
   script(src="/public/files/vendor/jquery-ui/jquery-ui.min.js")
   script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.iframe-transport.js")
   script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.fileupload.js")
+  script(src="/public/files/vendor/cropper/dist/cropper.min.js")
   script(src="/public/files/admin/index.js")

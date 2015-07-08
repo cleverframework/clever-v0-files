@@ -26,7 +26,7 @@ class UploadHandler {
     });
 
     file.on('data', function(data) {
-      console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+      // console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
       fileSize += data.length;
       writableStreamBuffer.write(data);
     });
@@ -55,7 +55,7 @@ class UploadHandler {
     const promiseWaiters = [];
 
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-      console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+      // console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
       const defer = Q.defer();
       self._handleFile(fieldname, file, filename, encoding, mimetype)
         .then(function(fileUploaded) {
@@ -66,17 +66,15 @@ class UploadHandler {
             key: `${shortid.generate()}_${filename}`,
             ecnoding: encoding,
             mimetype: mimetype,
-            private: true,
+            private: false, // TODO: protect files into CleverCore/Storage class
             size: fileUploaded.bufferSize
           };
 
           File.createFile(fileParams, fileUploaded.buffer)
-            .then(function() {
-              console.log('ciao')
-              defer.resolve();
+            .then(function(createdFile) {
+              defer.resolve(createdFile);
             })
             .catch(function(err) {
-              console.error(err);
               defer.reject(err);
             });
         })
@@ -89,11 +87,9 @@ class UploadHandler {
     // });
 
     busboy.on('finish', function() {
-      console.log('Done parsing form!');
-      Q.all(promiseWaiters).then(function() {
-        res.send('done')
-        // res.writeHead(303, { Connection: 'close', Location: '/' });
-        // res.end();
+      // console.log('Done parsing form!');
+      Q.all(promiseWaiters).then(function(createdFile) {
+        res.json(createdFile);
       }, next)
     });
 

@@ -73,6 +73,7 @@ const FileSchema = new Schema({
     required: true,
     default: 0
   },
+  metadata: {},
   created: {
     type: Date,
     default: Date.now
@@ -123,7 +124,7 @@ FileSchema.statics = {
     File.find({}, {}, options, function(err, files) {
       if (err) return defer.reject(err);
       return defer.resolve(files);
-    });
+    }).sort({ _id: -1 });
     return defer.promise;
   },
 
@@ -240,7 +241,9 @@ FileSchema.methods = {
    * @returns {*|Array|Binary|Object}
    */
   toJSON: function() {
-    return this.toObject();;
+    const obj = this.toObject();
+    obj.url = this.url;
+    return obj;
   }
 };
 
