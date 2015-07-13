@@ -24,6 +24,9 @@ module.exports = function(FilesPackage, app, auth, database, storage) {
   // Get file by id
   router.get('/:id', filesApiCtrl.getFileById);
 
+  // Edit files metadata
+  router.put('/metadata', auth.requiresAdmin, filesApiCtrl.editFilesMetadata);
+
   // Edit file by id
   router.put('/:id', auth.requiresAdmin, filesApiCtrl.editFileById.bind(null, storage));
 

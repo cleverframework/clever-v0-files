@@ -4,6 +4,7 @@ function sendObjectAsHttpResponse(res, httpStatus, obj) {
 exports.sendObjectAsHttpResponse = sendObjectAsHttpResponse;
 
 function sendErrorAsHttpResponse(res, httpStatus, obj) {
+  // console.error(obj);
   if((typeof obj).toLowerCase() === 'object' && !obj.msg) {
     const msg = obj.message || 'Generic Error. Please contact the support';
     obj = [];

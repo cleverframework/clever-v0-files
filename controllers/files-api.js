@@ -28,6 +28,22 @@ exports.createFile = function(req, res, next) {
   handler.post(req, res, next);
 };
 
+// Edit files
+exports.editFilesMetadata = function(req, res, next) {
+
+  req.assert('files', 'Files is mandatory').notEmpty();
+  req.assert('metadata_name', 'MetadataName is mandatory').notEmpty();
+
+  const errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).json(errors);
+  }
+
+  File.editFilesMetadata(req.body.files, req.body.metadata_name)
+    .then(util.sendObjectAsHttpResponse.bind(null, res, 202))
+    .catch(util.sendErrorAsHttpResponse.bind(null, res, 400));
+};
+
 // Edit file by id
 exports.editFileById = function(req, res, next) {
 

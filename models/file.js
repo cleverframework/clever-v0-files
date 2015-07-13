@@ -73,7 +73,10 @@ const FileSchema = new Schema({
     required: true,
     default: 0
   },
-  metadata: {},
+  metadata: {
+    type: Object,
+    default: {}
+  },
   created: {
     type: Date,
     default: Date.now
@@ -143,6 +146,62 @@ FileSchema.statics = {
       if (err) return defer.reject(err);
       return defer.resolve(file);
     });
+    return defer.promise;
+  },
+
+  /**
+   * editFilesMetadata
+   *
+   * @param {Array} files
+   * @return {Object}
+   * @api public
+   */
+  editFilesMetadata: function(files, metadataName) {
+    if(!files) throw new Error('File.editFilesMetadata: files parameter is mandatory');
+    if(!files) throw new Error('File.editFilesMetadata: metadataName parameter is mandatory');
+    const File = mongoose.model('File');
+    const defer = Q.defer();
+
+    const filesPerId = {};
+
+    const fileKeys = Object.keys(files);
+
+    for(let i in fileKeys) {
+      if(!files[fileKeys[i]]._id) {
+        defer.reject(new Error(`File.editFilesMetadata: files[${fileKeys[i]}]._id data is missing _id value`));
+        return defer.promise;
+      }
+
+      const id = files[fileKeys[i]]._id;
+      delete files[fileKeys[i]]._id;
+
+      if(!filesPerId[id]) filesPerId[id] = {};
+      filesPerId[id][fileKeys[i]] = files[fileKeys[i]];
+    }
+
+    function getAndSave(fileId, cb) {
+
+      function save(file) {
+        if(!file.metadata) file.metadata = {};
+        file.metadata[metadataName] = filesPerId[fileId];
+
+        file.save(function(err) {
+          const errors = hasErrors(err);
+          if(errors) return cb(errors);
+          cb(null, file);
+        });
+      }
+
+      File.getFileById(fileId)
+        .then(save)
+        .catch(cb);
+    }
+
+    async.map(Object.keys(filesPerId), getAndSave, function(err, results) {
+      if(err) return defer.reject(err);
+      defer.resolve(results);
+    });
+
     return defer.promise;
   },
 
