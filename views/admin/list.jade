@@ -128,6 +128,7 @@ block content
               
 block appendjs
   script.
+    window.urlreload = -1;
     window.csrf = '#{csrfToken}';
   script(src="/public/files/vendor/jquery-ui/jquery-ui.min.js")
   script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.iframe-transport.js")

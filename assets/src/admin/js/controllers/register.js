@@ -48,11 +48,11 @@ export default (app) => {
   // .prop('disabled', !$.support.fileInput)
   // .parent().addClass($.support.fileInput ? undefined : 'disabled');
 
-  $('#editFile').submit(e => {
+  $('#editFile').submit(function(e) {
     callListener.call(this, e, 'editFile');
   });
 
-  $('.deleteFile').click(e => {
+  $('.deleteFile').click(function(e) {
     callListener.call(this, e, 'deleteFile');
   });
 

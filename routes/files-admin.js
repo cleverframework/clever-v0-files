@@ -17,8 +17,6 @@ module.exports = function(FilesPackage, app, auth, database, storage) {
 
   router.get('/', auth.requiresAdmin, filesAdminCtrl.showFiles.bind(null, FilesPackage));
 
-  router.get('/create', auth.requiresAdmin, filesAdminCtrl.createFile.bind(null, FilesPackage));
-
   router.get('/:id', auth.requiresAdmin, filesAdminCtrl.showFileById.bind(null, FilesPackage));
 
   router.get('/:id/edit', auth.requiresAdmin, filesAdminCtrl.editFileById.bind(null, FilesPackage));

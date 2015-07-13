@@ -47,9 +47,7 @@ exports.editFilesMetadata = function(req, res, next) {
 // Edit file by id
 exports.editFileById = function(req, res, next) {
 
-  // Optionals
-  req.assert('key', 'Key cannot be empty').notEmpty();
-  req.assert('value', 'Value cannot be empty').notEmpty();
+  req.assert('title', 'Title cannot be empty').notEmpty();
 
   const errors = req.validationErrors();
   if (errors) {

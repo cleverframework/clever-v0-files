@@ -28,10 +28,10 @@ module.exports = function(FilesPackage, app, auth, database, storage) {
   router.put('/metadata', auth.requiresAdmin, filesApiCtrl.editFilesMetadata);
 
   // Edit file by id
-  router.put('/:id', auth.requiresAdmin, filesApiCtrl.editFileById.bind(null, storage));
+  router.put('/:id', auth.requiresAdmin, filesApiCtrl.editFileById);
 
   // Delete file
-  router.delete('/:id', auth.requiresAdmin, filesApiCtrl.deleteFileById.bind(null, storage));
+  router.delete('/:id', auth.requiresAdmin, filesApiCtrl.deleteFileById);
 
   return new CleverCore.CleverRoute(router, 'api', false);
 

@@ -24,7 +24,7 @@ export default (app) => {
   });
 
   app.on('editFile', (form) => {
-
+    
     const $editFileError = $('#editFileError');
     const $editFileBtn = $('#editFileBtn');
     const options = {
@@ -54,6 +54,8 @@ export default (app) => {
 
     const $btn = $(btn);
 
+    console.log($btn.data('id'))
+
     const request = $.ajax({
       url: `/api/files/${$btn.data('id')}`,
       beforeSend: function (request) {
@@ -63,7 +65,10 @@ export default (app) => {
     });
 
     request.done(function(msg) {
-      if(window.urlreload) return location.href = window.urlreload;
+      if(window.urlreload === -1) {
+        return location.reload();
+      }
+      location.href = window.urlreload;
     });
 
     request.fail(function( jqXHR, textStatus ) {

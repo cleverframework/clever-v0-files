@@ -2,20 +2,44 @@ extends ../../../system/views/admin/layout/admin
 
 block content
   h1.page-header
-    | Settings: 
-    span(style="color: #666") #{settingToShow.key} [Details]
+    | Files: 
+    span(style="color: #666") #{fileToShow.title} [Details]
     div.row.placeholders
-  form#editSetting.col-sm-8(autocomplete="off")
+  form#editFile.col-sm-8(autocomplete="off")
     .form-group
-        label(for="inputKey") Key
-        |     
-        input#inputKey.form-control(type="text", name="key", value="#{settingToShow.key}", placeholder="Key", disabled)
+      label(for="inputTitle") Title
+      |     
+      input#inputTitle.form-control(type="text", name="title", value="#{fileToShow.title}", placeholder="Title", disabled)
     .form-group
-        label(for="inputValue") Value
-        |     
-        textarea#inputValue.form-control(name="value", placeholder="String or JSON object syntax", disabled) #{settingToShow.value}
-      |   
-    a.btn.btn-default(href="/admin/settings", style="margin-right: 5px;") &laquo;
+      label(for="inputDescription") Description
+      |     
+      textarea#inputDescription.form-control(name="description", placeholder="", disabled) #{fileToShow.description}
+    | 
+    .form-group
+      label(for="inputTitle") Size (bytes)
+      |     
+      input#inputTitle.form-control(type="text", name="size", value="#{fileToShow.size}", placeholder="Size", disabled)  
+    .form-group
+      label(for="inputTitle") Type
+      |     
+      input#inputTitle.form-control(type="text", name="mimetype", value="#{fileToShow.mimetype}", placeholder="Mimetype", disabled)  
+    .form-group
+      label(for="inputTitle") Created
+      |     
+      input#inputTitle.form-control(type="text", name="created", value="#{fileToShow.created}", placeholder="Created", disabled)  
+    .form-group
+      label(for="inputTitle") Modified
+      |     
+      input#inputTitle.form-control(type="text", name="modified", value="#{fileToShow.created}", placeholder="Modified", disabled)  
+    .checkbox
+      label
+        if fileToShow.private
+          input(type="checkbox", name="private", value="1", checked, disabled)
+        else 
+          input(type="checkbox", name="private", value="1", disabled)
+        |  Private
+      
+    a.btn.btn-default(href="/admin/files", style="margin-right: 5px;") &laquo;
     .btn-group
         button.btn.btn-info.dropdown-toggle(type="button", data-toggle="dropdown", aria-expanded="false")
           | Modify 
@@ -23,13 +47,17 @@ block content
         |   
         ul.dropdown-menu(role="menu")
           li
-            a(href="/admin/settings/#{settingToShow._id}/edit") Edit
+            a(href="/admin/files/#{fileToShow._id}/edit") Edit
           | 
           li
-            a.deleteSetting(href="#", data-id="#{settingToShow._id}") Delete
+            a.deleteFile(href="#", data-id="#{fileToShow._id}") Delete
 
 block appendjs
   script.
     window.csrf = '#{csrfToken}';
-    window.urlreload = '/admin/settings';
-  script(src="/public/system/admin/index.js")
+    window.urlreload = '/admin/files';
+  script(src="/public/files/vendor/jquery-ui/jquery-ui.min.js")
+  script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.iframe-transport.js")
+  script(src="/public/files/vendor/blueimp-file-upload-node/js/jquery.fileupload.js")
+  script(src="/public/files/vendor/cropper/dist/cropper.min.js")
+  script(src="/public/files/admin/index.js")

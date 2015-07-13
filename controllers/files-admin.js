@@ -48,7 +48,7 @@ exports.showFiles = function(FilePackage, req, res, next) {
 
 exports.showFileById = function(FilePackage, req, res, next) {
   function render(fileToShow) {
-    res.send(FilePackage.render('admin/files/details', {
+    res.send(FilePackage.render('admin/details', {
       packages: FilePackage.getCleverCore().getInstance().exportablePkgList,
       user: req.user,
       fileToShow: fileToShow,
@@ -61,17 +61,9 @@ exports.showFileById = function(FilePackage, req, res, next) {
     .catch(util.passNext.bind(null, next));
 };
 
-exports.createFile = function(FilePackage, req, res, next) {
-  res.send(FilePackage.render('admin/files/create', {
-    packages: FilePackage.getCleverCore().getInstance().exportablePkgList,
-    user: req.user,
-    csrfToken: req.csrfToken()
-  }));
-};
-
 exports.editFileById = function(FilePackage, req, res, next) {
   function render(fileToEdit) {
-    res.send(FilePackage.render(`admin/files/edit`, {
+    res.send(FilePackage.render(`admin/edit`, {
       packages: FilePackage.getCleverCore().getInstance().exportablePkgList,
       user: req.user,
       fileToEdit: fileToEdit,

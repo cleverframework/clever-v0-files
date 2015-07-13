@@ -220,8 +220,11 @@ FileSchema.statics = {
 
     function save(file) {
 
+      // Reset
+      file.private = false; 
+
       Object.keys(fileParams).forEach(function (key, index) {
-        if(key==='_images') return; // handle this in a dedicated function
+        if(key==='private' && fileParams[key] === '1') return file.private = true;
         file[key] = fileParams[key];
       });
 
