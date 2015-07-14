@@ -221,7 +221,7 @@ FileSchema.statics = {
     function save(file) {
 
       // Reset
-      file.private = false; 
+      file.private = false;
 
       Object.keys(fileParams).forEach(function (key, index) {
         if(key==='private' && fileParams[key] === '1') return file.private = true;
@@ -253,10 +253,20 @@ FileSchema.statics = {
     if(!id) throw new Error('File.deleteFileById: id parameter is mandatory');
     const File = mongoose.model('File');
     const defer = Q.defer();
-    File.remove({_id: id}, function(err, result) {
-      if (err) return defer.reject(err);
-      return defer.resolve(result);
-    });
+
+    File.getFileById(id)
+      .then(function(file) {
+        storage.deleteFile(file.key)
+          .then(function() {
+            File.remove({_id: file._id}, function(err, result) {
+              if (err) return defer.reject(err);
+              return defer.resolve(result);
+            });
+          })
+          .catch(defer.reject);
+      })
+      .catch(defer.reject);
+
     return defer.promise;
   },
 
