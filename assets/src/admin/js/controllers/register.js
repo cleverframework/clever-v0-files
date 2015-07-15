@@ -15,21 +15,23 @@ export default (app) => {
   const FileUploaderInstance = new FileUploader('#fileUploaderContainer', '#fileUploaderMediaController',  {
     maxFileSize: -1,
     metadataName: 'cropper_files',
+    uploaderApiPath: '/api/files',
+    metadataApiPath: '/api/files/metadata',
+    // acceptFileTypes: 'image/jpg,image/jpeg,image/gif,image/png',
     croppers: [
-      {
-        name: '16:9',
-        value: 16/9
-      },
-      {
-        name: '4:3',
-        value: 4/3
-      },
+      // {
+      //   name: '16:9',
+      //   value: 16/9
+      // },
+      // {
+      //   name: '4:3',
+      //   value: 4/3
+      // },
       {
         name: '1:1',
         value: 1/1
       }
-    ],
-    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i // default: no restriction
+    ]
   });
 
   // $('#fileupload').fileupload({
