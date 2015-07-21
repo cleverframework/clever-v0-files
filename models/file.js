@@ -132,6 +132,32 @@ FileSchema.statics = {
   },
 
   /**
+   * GetImageList - return the list of images (png | jpg | jpeg | gif)
+   *
+   * @return {Object}
+   * @api public
+   */
+  getImageList: function() {
+    const File = mongoose.model('File');
+    const defer = Q.defer();
+    File.find({ mimetype : { $in : [ 'image/jpg', 'image/jpeg', 'image/png', 'image/gif' ] }}, {}, {}, function(err, images) {
+      if (err) return defer.reject(err);
+      async.map(images, function(image, cb) {
+        const listElement = {};
+        listElement._id = image._id;
+        listElement.title = image.title;
+        listElement.url = image.url;
+        cb(null, listElement);
+      }, function(errors, imageList) {
+        if(errors) return defer.reject(errors);
+        defer.resolve(imageList);
+      });
+
+    }).sort({ title: -1 });
+    return defer.promise;
+  },
+
+  /**
    * GetFileById - return the file matching the id
    *
    * @param {String} id
