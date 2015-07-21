@@ -53,7 +53,7 @@ block content
           td
             | #{file.mimetype}  
           td
-            | #{file.modified || 'Never'}
+            | #{file.modified_ago || 'Never'}
           td
             .btn-group
                 button.btn.btn-info.dropdown-toggle(type="button", data-toggle="dropdown", aria-expanded="false")

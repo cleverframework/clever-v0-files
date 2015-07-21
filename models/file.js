@@ -9,6 +9,7 @@ const Schema  = mongoose.Schema;
 const _ = require('lodash');
 const Q = require('q');
 const async = require('async');
+const moment = require('moment');
 
 // Mongoose Error Handling
 function hasErrors(err) {
@@ -92,6 +93,14 @@ FileSchema.virtual('url').set(function(url) {
   throw new Error('File::url cannot be set.');
 }).get(function() {
   return `${storage.webServerUrl}/${storage.volumeName}/${this.key}`;
+});
+
+// Virtuals
+FileSchema.virtual('modified_ago').set(function(url) {
+  throw new Error('File::url cannot be set.');
+}).get(function() {
+  if(this.modified === null) return null;
+  return moment(this.modified).fromNow();
 });
 
 // Static Methods
@@ -248,6 +257,8 @@ FileSchema.statics = {
 
       // Reset
       file.private = false;
+
+      file.modified = Date.now();
 
       Object.keys(fileParams).forEach(function (key, index) {
         if(key==='private' && fileParams[key] === '1') return file.private = true;
