@@ -97,7 +97,7 @@ FileSchema.virtual('url').set(function(url) {
 
 // Virtuals
 FileSchema.virtual('modified_ago').set(function(url) {
-  throw new Error('File::url cannot be set.');
+  throw new Error('File::modified_ago cannot be set.');
 }).get(function() {
   if(this.modified === null) return null;
   return moment(this.modified).fromNow();
