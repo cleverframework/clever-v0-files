@@ -16,21 +16,21 @@ block content
       textarea#inputDescription.form-control(name="description", placeholder="", disabled) #{fileToShow.description}
     | 
     .form-group
-      label(for="inputTitle") Size (bytes)
+      label(for="inputSize") Size (bytes)
       |     
-      input#inputTitle.form-control(type="text", name="size", value="#{fileToShow.size}", placeholder="Size", disabled)  
+      input#inputSize.form-control(type="text", name="size", value="#{fileToShow.size}", placeholder="Size", disabled)  
     .form-group
-      label(for="inputTitle") Type
+      label(for="inputType") Type
       |     
-      input#inputTitle.form-control(type="text", name="mimetype", value="#{fileToShow.mimetype}", placeholder="Mimetype", disabled)  
+      input#inputType.form-control(type="text", name="mimetype", value="#{fileToShow.mimetype}", placeholder="Mimetype", disabled)  
     .form-group
-      label(for="inputTitle") Created
+      label(for="inputCreated") Created
       |     
-      input#inputTitle.form-control(type="text", name="created", value="#{fileToShow.created}", placeholder="Created", disabled)  
+      input#inputCreated.form-control(type="text", name="created", value="#{fileToShow.created_format} (#{fileToShow.created_ago})", placeholder="Created", disabled)  
     .form-group
-      label(for="inputTitle") Modified
+      label(for="inputModified") Modified
       |     
-      input#inputTitle.form-control(type="text", name="modified", value="#{fileToShow.created}", placeholder="Modified", disabled)  
+      input#inputModified.form-control(type="text", name="modified", value="#{fileToShow.modified_format|| 'Never'} #{fileToShow.modified_format ? '(' + fileToShow.modified_ago + ')' : ''}", placeholder="Modified", disabled)  
     .checkbox
       label
         if fileToShow.private

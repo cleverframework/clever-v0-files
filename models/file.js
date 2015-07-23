@@ -95,12 +95,32 @@ FileSchema.virtual('url').set(function(url) {
   return `${storage.webServerUrl}/${storage.volumeName}/${this.key}`;
 });
 
-// Virtuals
-FileSchema.virtual('modified_ago').set(function(url) {
-  throw new Error('File::modified_ago cannot be set.');
+FileSchema.virtual('created_ago').set(function(url) {
+  throw new Error('Page::created_ago cannot be set.');
 }).get(function() {
-  if(this.modified === null) return null;
+  if(this.created === null) return null;
+  return moment(this.created).fromNow();
+});
+
+FileSchema.virtual('modified_ago').set(function(url) {
+  throw new Error('Page::modified_ago cannot be set.');
+}).get(function() {
+    if(!this.modified || this.modified === null) return null;
   return moment(this.modified).fromNow();
+});
+
+FileSchema.virtual('created_format').set(function(url) {
+  throw new Error('Page::created_format cannot be set.');
+}).get(function() {
+  if(this.created === null) return null;
+  return moment(this.created).format('MM/DD/YYYY hh:mm:ss');
+});
+
+FileSchema.virtual('modified_format').set(function(url) {
+  throw new Error('Page::modified_format cannot be set.');
+}).get(function() {
+  if(!this.modified || this.modified === null) return null;
+  return moment(this.modified).format('MM/DD/YYYY hh:mm:ss');
 });
 
 // Static Methods
