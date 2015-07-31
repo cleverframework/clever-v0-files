@@ -5,6 +5,15 @@
   "author": {
     "name": "Jacopo Daeli <jacopo.daeli@gmail.com>"
   },
+  "scripts": {
+    "build": "npm run build-js && npm run build-css",
+    "develop": "npm run watch-js & npm run watch-css",
+    "watch-js": "watchify assets/src/admin/js/index.js --debug -t babelify -t jadeify -o assets/dist/admin/index.js -v",
+    "build-js": "browserify assets/src/admin/js/index.js -t babelify -t jadeify -o assets/dist/admin/index.js",
+    "lint": "standard assets/src/admin/js/**/*.js --verbose | snazzy",
+    "watch-css": "stylus assets/src/admin/styl/index.styl -o assets/dist/admin/index.css -u stylus-mixins -u autoprefixer-stylus -w",
+    "build-css": "stylus assets/src/admin/styl/index.styl -o assets/dist/admin/index.css -u stylus-mixins -u autoprefixer-stylus"
+  },
   "clever": "0.0.x",
   "visible": true,
   "dependencies": {
