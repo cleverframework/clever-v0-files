@@ -151,7 +151,7 @@ FileSchema.statics = {
    */
   getFiles: function(skip, limit) {
     const File = mongoose.model('File');
-    const options = skip && limit ? {skip: skip, limit: limit} : {};
+    const options = skip && limit ? {skip: skip, limit: limit} : {skip: 0, limit: 10};
     const defer = Q.defer();
     File.find({}, {}, options, function(err, files) {
       if (err) return defer.reject(err);
